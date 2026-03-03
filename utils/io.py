@@ -1,15 +1,24 @@
 import pandas as pd
+import streamlit as st
+
+@st.cache_data
+def load_epl():
+    df1 = pd.read_csv("data/PL-season-2324.csv")
+    df2 = pd.read_csv("data/PL-season-2425.csv")
+
+    df1["season"] = "2023-24"
+    df2["season"] = "2024-25"
+
+    df = pd.concat([df1, df2], ignore_index=True)
+    df["Date"] = pd.to_datetime(df["Date"], dayfirst=True)
+
+    return df
+
 
 def prepare_season_performance(df):
-    df_2324 = df[df["season"] == "2023-24"].copy()
-    df_2425 = df[df["season"] == "2024-25"].copy()
+    df = df.copy()
 
-    df_2324["season"] = "2023-24"
-    df_2425["season"] = "2024-25"
-
-    allseasons = pd.concat([df_2324, df_2425], ignore_index=True)
-
-    long = allseasons.melt(
+    long = df.melt(
         id_vars=["season", "FTHG", "FTAG"],
         value_vars=["HomeTeam", "AwayTeam"],
         var_name="side",
@@ -33,7 +42,6 @@ def prepare_season_performance(df):
 
     summary["goal_difference"] = summary["goals_for"] - summary["goals_against"]
 
-    
     summary["rank"] = (
         summary.groupby("season")["goal_difference"]
         .rank(ascending=False, method="dense")
@@ -41,9 +49,9 @@ def prepare_season_performance(df):
 
     return summary
 
+
 def prepare_attacking_consistency(df):
     df = df.copy()
-    df["Date"] = pd.to_datetime(df["Date"], dayfirst=True)
     df = df.sort_values("Date")
 
     home = df.copy()
@@ -79,9 +87,9 @@ def prepare_attacking_consistency(df):
 
     return metric_df
 
+
 def prepare_home_away(df):
     df = df.copy()
-    df["Date"] = pd.to_datetime(df["Date"], dayfirst=True)
     df = df.sort_values("Date")
 
     home = df.copy()
