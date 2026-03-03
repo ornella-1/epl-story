@@ -62,4 +62,4 @@ df_ref, ref_season = prepare_referee_data(df)
 st.header("Referee Influence on Match Discipline")
 st.write("How do different referees differ in their disciplinary tendencies and how does this affect performance?")
 st.altair_chart(chart_referee(df_ref, ref_season), use_container_width=True)
-st.caption("The left horizontal bar chart ranks referees based on the average number of cards they issue per match in a particular season. The right scatter plot shows the relationship between the number of cards given by each referee and the number of fouls committed in the match. The interactive dropdown allows you to select a specific season to see how referee tendencies differ"
+st.caption("The left horizontal bar chart ranks referees based on the average number of cards they issue per match in a particular season. The right scatter plot shows the relationship between the number of cards given by each referee and the number of fouls committed in the match. The interactive dropdown allows you to select a specific season to see how referee tendencies differ")
