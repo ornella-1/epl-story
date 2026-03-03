@@ -123,3 +123,27 @@ def prepare_home_away(df):
     team_summary = pd.merge(home_summary, away_summary, on=["season", "team"])
 
     return team_matches, team_summary
+
+
+
+def prepare_referee_data(df):
+    df = df.copy()
+
+    df["Fouls"] = df["HF"] + df["AF"]
+    df["Yellows"] = df["HY"] + df["AY"]
+    df["Reds"] = df["HR"] + df["AR"]
+    df["Cards"] = df["Yellows"] + df["Reds"]
+
+    
+    ref_season = (
+        df.groupby(["season", "Referee"], as_index=False)
+        .agg(
+            Matches=("Date", "count"),
+            AvgFouls=("Fouls", "mean"),
+            AvgCards=("Cards", "mean"),
+            AvgYellows=("Yellows", "mean"),
+            AvgReds=("Reds", "mean"),
+        )
+    )
+
+    return df, ref_season

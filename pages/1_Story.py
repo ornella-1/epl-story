@@ -1,6 +1,6 @@
 import streamlit as st
-from utils.io import load_epl, prepare_season_performance, prepare_attacking_consistency, prepare_home_away
-from charts.charts import chart_season_performance, chart_attacking_consistency, chart_home_away
+from utils.io import load_epl, prepare_season_performance, prepare_attacking_consistency, prepare_home_away, prepare_referee_data
+from charts.charts import chart_season_performance, chart_attacking_consistency, chart_home_away, chart_referee
 
 df = load_epl()
 goal_summary = prepare_season_performance(df)
@@ -43,5 +43,16 @@ st.write("Do teams perform differently at home compared to away?")
 
 st.altair_chart(
     chart_home_away(team_summary, team_matches),
+    use_container_width=True
+)
+
+
+df_ref, ref_season = prepare_referee_data(df)
+
+st.header("Referee Influence on Match Discipline")
+st.write("How do referees differ in their disciplinary tendencies across seasons?")
+
+st.altair_chart(
+    chart_referee(df_ref, ref_season),
     use_container_width=True
 )

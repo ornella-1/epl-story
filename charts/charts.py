@@ -92,3 +92,62 @@ def chart_home_away(team_summary, team_matches):
 
     return scatter | detail
 
+
+
+def chart_referee(df, ref_season):
+    global_brush = alt.selection_interval(name="MatchBrush")
+
+    season_sel = alt.selection_point(
+        fields=["season"],
+        bind=alt.binding_select(options=sorted(df["season"].unique())),
+        name="Season"
+    )
+
+    ref_sel = alt.selection_point(
+        fields=["Referee"],
+        on="click",
+        clear="dblclick",
+        name="Referee"
+    )
+
+
+    ref_chart = (
+        alt.Chart(ref_season)
+        .add_params(season_sel, ref_sel)
+        .transform_filter(season_sel)
+        .mark_bar()
+        .encode(
+            y=alt.Y("Referee:N", sort="-x", title="Referee"),
+            x=alt.X("AvgCards:Q", title="Avg Cards per Match"),
+            color=alt.condition(ref_sel, alt.value("#d62728"), alt.value("#1f77b4")),
+            opacity=alt.condition(global_brush, alt.value(1), alt.value(0.3)),
+            tooltip=[
+                "Referee:N",
+                alt.Tooltip("AvgCards:Q", format=".2f"),
+                alt.Tooltip("AvgFouls:Q", format=".2f"),
+                alt.Tooltip("AvgYellows:Q", format=".2f"),
+                alt.Tooltip("AvgReds:Q", format=".2f"),
+            ],
+        )
+        .properties(width=350, height=400, title="Referees Ranked by Avg Cards")
+    )
+
+    match_chart = (
+        alt.Chart(df)
+        .transform_filter(season_sel)
+        .transform_filter(ref_sel)
+        .add_params(global_brush)
+        .mark_circle(size=70, opacity=0.7)
+        .encode(
+            x=alt.X("Fouls:Q", title="Fouls in Match"),
+            y=alt.Y("Cards:Q", title="Cards in Match"),
+            color=alt.condition(ref_sel, "Referee:N", alt.value("lightgray")),
+            tooltip=[
+                "Date:T", "HomeTeam", "AwayTeam",
+                "Referee", "Fouls", "Yellows", "Reds", "Cards"
+            ]
+        )
+        .properties(width=400, height=400, title="Match-Level Disciplinary Decisions")
+    )
+
+    return ref_chart | match_chart
