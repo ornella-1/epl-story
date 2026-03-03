@@ -70,7 +70,7 @@ def chart_attacking_consistency_story(metric_df, team_dropdown):
         .encode(
             x=alt.X("matchweek:Q", title="Matchweek"),
             y=alt.Y("value:Q", title="Metric Value"),
-            color="team:N",
+            color=alt.Color("season:N", title="Season"),
             tooltip=["season", "team", "matchweek", "metric", "value"]
         )
         .add_params(team_dropdown, metric_param)
@@ -80,7 +80,6 @@ def chart_attacking_consistency_story(metric_df, team_dropdown):
     )
 
     return chart
-
 
 
 
