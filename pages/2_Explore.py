@@ -43,15 +43,21 @@ with col1:
         use_container_width=True
     )
 
+
 with col2:
     st.subheader("Attacking Consistency")
-    st.altair_chart(
-        chart_attacking_consistency(metric_df, team_dropdown),
-        use_container_width=True
+
+    selected_team = st.selectbox(
+        "Select team:",
+        sorted(metric_df["team"].unique())
     )
 
-st.subheader("Home vs Away Influence")
-st.altair_chart(
-    chart_home_away(team_summary, team_matches),
-    use_container_width=True
-)
+    selected_metric = st.selectbox(
+        "Metric:",
+        ["goals", "shots", "shots_on_target", "corners", "fouls"]
+    )
+
+    st.altair_chart(
+        chart_attacking_consistency(metric_df, selected_team, selected_metric),
+        use_container_width=True
+    )

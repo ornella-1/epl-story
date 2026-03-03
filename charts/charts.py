@@ -28,20 +28,15 @@ def chart_season_performance(goal_summary):
     return chart
 
 
-def chart_attacking_consistency(metric_df, team_dropdown):
-    metric_param = alt.param(
-        value="goals",
-        bind=alt.binding_select(
-            options=["goals", "shots", "shots_on_target", "corners", "fouls"],
-            name="Metric: "
-        )
-    )
+def chart_attacking_consistency(metric_df, selected_team, selected_metric):
+
+    filtered_df = metric_df[
+        (metric_df["team"] == selected_team) &
+        (metric_df["metric"] == selected_metric)
+    ]
 
     chart = (
-        alt.Chart(metric_df)
-        .add_params(metric_param)
-        .transform_filter(team_dropdown)  \
-        .transform_filter(alt.datum.metric == metric_param)
+        alt.Chart(filtered_df)
         .mark_line(point=True, strokeWidth=3)
         .encode(
             x=alt.X("matchweek:Q", title="Matchweek"),
@@ -54,10 +49,14 @@ def chart_attacking_consistency(metric_df, team_dropdown):
             tooltip=["team", "season", "matchweek", "value"]
         )
         .properties(width=500, height=300)
-        .resolve_scale(color="shared")
     )
 
     return chart
+
+
+
+
+
 
 
 def chart_home_away(team_summary, team_matches):
