@@ -2,6 +2,7 @@ import streamlit as st
 import altair as alt
 
 from charts.charts import (
+    chart_attacking_consistency_story,
     chart_season_performance,
     chart_attacking_consistency,
     chart_home_away,
@@ -42,7 +43,9 @@ metric_df = prepare_attacking_consistency(df)
 
 st.header("Attacking Consistency Across Matchweeks")
 st.write("How stable are teams’ attacking metrics across the season?")
-st.altair_chart(chart_attacking_consistency(metric_df, team_dropdown), use_container_width=True)
+st.altair_chart(chart_attacking_consistency_story(metric_df, team_dropdown), use_container_width=True)
+
+
 
 # 3. Home vs Away Influence
 

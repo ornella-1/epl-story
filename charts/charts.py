@@ -54,7 +54,32 @@ def chart_attacking_consistency(metric_df, selected_team, selected_metric):
     return chart
 
 
+def chart_attacking_consistency_story(metric_df, team_dropdown):
 
+    metric_param = alt.param(
+        name="metric",
+        bind=alt.binding_select(
+            options=sorted(metric_df["metric"].unique()),
+            name="Metric: "
+        )
+    )
+
+    chart = (
+        alt.Chart(metric_df)
+        .mark_line(point=True)
+        .encode(
+            x=alt.X("matchweek:Q", title="Matchweek"),
+            y=alt.Y("value:Q", title="Metric Value"),
+            color="team:N",
+            tooltip=["season", "team", "matchweek", "metric", "value"]
+        )
+        .add_params(team_dropdown, metric_param)
+        .transform_filter(team_dropdown)
+        .transform_filter(alt.datum.metric == metric_param)
+        .properties(width=500, height=300)
+    )
+
+    return chart
 
 
 
