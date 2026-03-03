@@ -19,9 +19,7 @@ st.set_page_config(page_title="Explore", layout="wide")
 st.title("Interactive Exploration")
 st.write("Use the controls below to explore team performance across seasons.")
 
-
 df = load_epl()
-
 
 goal_summary = prepare_season_performance(df)
 metric_df = prepare_attacking_consistency(df)
@@ -35,7 +33,6 @@ team_dropdown = alt.selection_point(
     ),
     empty="all"
 )
-
 
 col1, col2 = st.columns(2)
 
